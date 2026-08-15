@@ -49,8 +49,16 @@
     links.insertAdjacentHTML('beforeend', `
       <div style="height:1px;background:#e5ddce;margin:6px 0"></div>
       <a href="admin-analytics.html">إحصائيات المالك</a>
-      <a href="admin-scholarships.html">إدارة المنح والمحتوى</a>
-      <a href="admin-orders.html">الطلبات والخدمات</a>
+      <a href="admin-homepage.html">إدارة الرئيسية</a>
+      <a href="admin-scholarships.html">إدارة المنح</a>
+      <a href="admin-services.html">إدارة الخدمات</a>
+      <a href="admin-offers.html">إدارة العروض</a>
+      <a href="admin-orders.html">طلبات الخدمات</a>
+      <a href="admin-community.html">إدارة المجتمع</a>
+      <a href="admin-videos.html">إدارة الفيديوهات</a>
+      <a href="admin-users.html">المستخدمون والفريق</a>
+      <a href="admin-gamification.html">XP والمهمات والجوائز</a>
+      <a href="admin-announcements.html">التنبيهات</a>
       <a href="admin-messages.html">الرسائل والشكاوى</a>
       <a href="admin-revenue.html">الإعلانات والدخل</a>
       <a href="admin-security.html">الأمان والسجل</a>`);
@@ -78,7 +86,9 @@
   import('./nav-auth.js?v=3').catch(() => {});
   import('./scholarship-extra.js?v=4').catch(() => {});
   import('./scholarships-live.js?v=1').catch(() => {});
-  if (location.pathname.endsWith('/admin-scholarships.html')) import('./scholarships-admin.js?v=1').catch(console.error);
+  if (document.body.dataset.role === 'owner') import('./admin-navigation.js?v=1').catch(console.error);
+  if (location.pathname.endsWith('/admin-scholarships.html')) import('./scholarships-admin.js?v=2').catch(console.error);
+  if (location.pathname.endsWith('/admin-analytics.html')) import('./admin-scholarship-analytics.js?v=1').catch(console.error);
   import('./analytics.js?v=1').catch(() => {});
   import('./admin-live-data.js?v=1').catch(() => {});
 })();
