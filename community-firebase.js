@@ -1,9 +1,10 @@
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js';
+import { getApp, getApps, initializeApp } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js';
-import { addDoc, collection, getFirestore, limit, onSnapshot, orderBy, query, serverTimestamp, where } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js';
+import { addDoc, collection, doc, getDoc, getDocs, getFirestore, limit, onSnapshot, orderBy, query, serverTimestamp, where } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js';
 import { firebaseConfig } from './firebase-config.js';
+import { scholarshipCatalog, mergeScholarships } from './scholarship-catalog.js';
 
-const app = initializeApp(firebaseConfig);
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const status = document.querySelector('#community-status');
@@ -14,12 +15,31 @@ const postDialog = document.querySelector('#post-dialog');
 const postForm = document.querySelector('#community-post-form');
 const postMessage = document.querySelector('#post-form-message');
 let currentUser = null;
+let currentProfile = null;
 
 const typeLabels = {question:'سؤال',experience:'تجربة طالب',info:'معلومة',guide:'دليل',update:'تحديث',warning:'تحذير',accepted:'نتيجة قبول'};
-const scholarshipLabels = {'open-doors':'Open Doors','education-in-russia':'Education in Russia'};
+let scholarships = scholarshipCatalog.filter((item) => item.publishStatus === 'published');
+let scholarshipLabels = Object.fromEntries(scholarships.map((item) => [item.slug, item.title]));
 const personalData = /(?:\+?\d[\d\s-]{7,}|[\w.+-]+@[\w.-]+\.[A-Za-z]{2,})/;
 const open = (element) => { element?.classList.add('is-open'); element?.setAttribute('aria-hidden','false'); document.body.classList.add('menu-open'); };
 const close = (element) => { element?.classList.remove('is-open'); element?.setAttribute('aria-hidden','true'); document.body.classList.remove('menu-open'); };
+
+function renderScholarshipChoices() {
+  scholarshipLabels = Object.fromEntries(scholarships.map((item) => [item.slug, item.title]));
+  const filter = document.querySelector('#scholarship-filter');
+  const composer = document.querySelector('#new-post-scholarship');
+  if (filter) filter.innerHTML = '<option value="">كل المنح</option>' + scholarships.map((item) => `<option value="${item.slug}">${item.title}</option>`).join('');
+  if (composer) composer.innerHTML = '<option value="">غير محددة</option>' + scholarships.map((item) => `<option value="${item.slug}">${item.title}</option>`).join('');
+  const rooms = document.querySelector('.side-card .scholarship-room')?.parentElement;
+  if (rooms) rooms.querySelectorAll('.scholarship-room').forEach((item) => item.remove());
+  scholarships.slice(0, 7).forEach((item) => rooms?.insertAdjacentHTML('beforeend', `<a class="scholarship-room" href="community.html?scholarship=${item.slug}"><b>${item.title}</b><small>${item.country} · ${item.funding || 'تفاصيل المنحة'}</small></a>`));
+}
+
+renderScholarshipChoices();
+getDocs(collection(db, 'scholarships')).then((snapshot) => {
+  scholarships = mergeScholarships(snapshot.docs.map((item) => item.data())).filter((item) => item.publishStatus === 'published');
+  renderScholarshipChoices();
+}).catch(() => {});
 
 document.querySelectorAll('[data-post-close]').forEach((button) => button.addEventListener('click', () => close(postDialog)));
 composerButton?.addEventListener('click', (event) => {
@@ -60,8 +80,8 @@ function commentForm(postId, parentId = null, onDone = null) {
     try {
       await addDoc(collection(db,'communityPosts',postId,'comments'), {
         authorId: currentUser.uid,
-        authorUsername: currentUser.displayName || 'طالب_شذرات',
-        authorLevel: 1,
+        authorUsername: currentProfile?.username || `student_${currentUser.uid.slice(0,6)}`,
+        authorLevel: Number(currentProfile?.level) || 1,
         body,
         parentId,
         status: 'published',
@@ -171,8 +191,12 @@ onSnapshot(feedQuery, (snapshot) => {
   postsRoot.replaceChildren(...snapshot.docs.map((item) => postCard(item.id,item.data())));
 }, renderError);
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   currentUser = user;
+  currentProfile = null;
+  if (user) {
+    try { currentProfile = (await getDoc(doc(db,'users',user.uid))).data() || null; } catch {}
+  }
   if (composerButton) composerButton.textContent = user ? 'اكتب سؤالًا أو تجربة...' : 'سجّل دخولك للمشاركة';
 });
 
@@ -186,8 +210,8 @@ postForm?.addEventListener('submit', async (event) => {
   try {
     await addDoc(collection(db,'communityPosts'), {
       authorId: currentUser.uid,
-      authorUsername: currentUser.displayName || 'طالب_شذرات',
-      authorLevel: 1,
+      authorUsername: currentProfile?.username || `student_${currentUser.uid.slice(0,6)}`,
+      authorLevel: Number(currentProfile?.level) || 1,
       title: document.querySelector('#new-post-title').value.trim(), body,
       type: document.querySelector('#new-post-type').value,
       scholarshipSlug: document.querySelector('#new-post-scholarship').value,
@@ -196,6 +220,6 @@ postForm?.addEventListener('submit', async (event) => {
     });
     postForm.reset(); close(postDialog);
   } catch (error) {
-    postMessage.textContent = error.code === 'permission-denied' ? 'النشر غير متاح حتى يكتمل ملف حسابك وتُنشر قواعد الحماية.' : 'حدث خطأ ولم يُنشر المحتوى. حاول مجددًا.';
+    postMessage.textContent = error.code === 'permission-denied' ? 'تعذر النشر. تأكد من تسجيل الدخول وأن حسابك نشط، ثم حاول مرة أخرى.' : 'حدث خطأ ولم يُنشر المحتوى. حاول مجددًا.';
   } finally { submit.disabled = false; }
 });
