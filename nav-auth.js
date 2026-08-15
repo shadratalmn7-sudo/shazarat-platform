@@ -5,7 +5,7 @@ const app=getApps().length?getApp():initializeApp(firebaseConfig),auth=getAuth(a
 const logout=async()=>{await signOut(auth);location.replace('index.html')};
 document.querySelectorAll('span.btn,span.dark').forEach(el=>{if(/إنشاء|حساب/.test(el.textContent)){el.setAttribute('role','link');el.tabIndex=0;el.style.cursor='pointer';const go=()=>location.href='register.html';el.addEventListener('click',go);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')go()})}});
 onAuthStateChanged(auth,user=>{
-  document.querySelectorAll('a[href="login.html"],a[href="register.html"]').forEach(a=>a.hidden=!!user);
+  document.querySelectorAll('a[href="login.html"],a[href="register.html"]').forEach(a=>{a.hidden=!!user;if(user)a.style.setProperty('display','none','important');else a.style.removeProperty('display')});
   document.querySelectorAll('[data-auth-logout]').forEach(b=>b.remove());
   if(!user)return;
   document.querySelectorAll('.global-menu-actions,.actions,.nav-actions,.menu-cta').forEach(area=>{
