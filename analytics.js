@@ -1,5 +1,5 @@
 (()=>{
- const ID='G-3QS0BEJYER',KEY='shazarat_analytics_consent',choice=localStorage.getItem(KEY);
+ const ID='G-XEXLP7S36Z',KEY='shazarat_analytics_consent',choice=localStorage.getItem(KEY);
  window.dataLayer=window.dataLayer||[];window.gtag=window.gtag||function(){dataLayer.push(arguments)};
  gtag('consent','default',{analytics_storage:choice==='granted'?'granted':'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',wait_for_update:500});
  if(!document.querySelector(`script[src*="${ID}"]`)){const s=document.createElement('script');s.async=true;s.src=`https://www.googletagmanager.com/gtag/js?id=${ID}`;document.head.appendChild(s)}
