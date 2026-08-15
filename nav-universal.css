@@ -1,4 +1,7 @@
 /* قائمة جوال موحدة لكل صفحات المنصة */
+.global-site-header{height:72px;border-bottom:1px solid #e5ddce;background:#f7f2e8f2;display:flex;align-items:center;position:sticky;top:0;z-index:50;backdrop-filter:blur(12px)}
+.global-site-header .nav{display:flex;align-items:center;justify-content:space-between;width:min(1120px,calc(100% - 32px));margin:auto}
+.global-site-header .brand-logo{width:190px;max-height:52px}
 .global-hamburger {
   display: none;
   flex: 0 0 44px;
