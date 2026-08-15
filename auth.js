@@ -4,6 +4,10 @@ import { doc, getDoc, getFirestore, serverTimestamp, setDoc, writeBatch } from '
 import { firebaseConfig } from './firebase-config.js';
 const OWNER_EMAIL='shadrat.almn7@gmail.com';
 const app=getApps().length?getApp():initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+if(new URLSearchParams(location.search).get('admin')==='1'){
+  await auth.authStateReady();
+  if(auth.currentUser) await signOut(auth);
+}
 const clean=(v='')=>v.trim().toLowerCase(),isOwner=(v='')=>clean(v)===OWNER_EMAIL;
 const normalizePhone=(value='')=>{let p=value.replace(/[^\d+]/g,'');if(p.startsWith('00'))p=`+${p.slice(2)}`;if(/^05\d{8}$/.test(p))p=`+966${p.slice(1)}`;if(/^9665\d{8}$/.test(p))p=`+${p}`;return /^\+[1-9]\d{7,14}$/.test(p)?p:null};
 const digest=async value=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value)))).map(x=>x.toString(16).padStart(2,'0')).join('');
