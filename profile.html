@@ -1,1 +1,53 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>حساب الطالب | شذرات</title><link rel="stylesheet" href="site.css"><link rel="stylesheet" href="motion.css"></head><body><header class="site-header"><div class="container nav"><a class="brand" href="index.html"><span class="logo">ش</span>شذرات للمنح</a><nav class="nav-links"><a href="scholarships.html">اكتشف المنح</a><a href="services.html">الخدمات</a><a href="contact.html">الدعم</a></nav><a class="btn outline" href="login.html">دخول</a></div></header><main><section class="page-hero"><div class="container"><span class="eyebrow">تصور لوحة الطالب</span><h1>رحلتك في مكان واحد</h1><p class="lead">هذه معاينة للوحة التي ستتصل بحساب الطالب بعد بناء قاعدة البيانات.</p></div></section><section class="section"><div class="container sidebar-layout"><aside class="card sidebar"><a href="#overview">نظرة عامة</a><a href="#saved">المفضلة</a><a href="#journey">رحلة التقديم</a><a href="#orders">طلباتي</a><a href="#rewards">المستوى والمكافآت</a></aside><div class="grid"><div class="grid grid-3"><div class="stat"><b>0</b>منح محفوظة</div><div class="stat"><b>0</b>طلبات خدمة</div><div class="stat"><b>Level 1</b>0 XP</div></div><section class="card" id="saved"><h2>المفضلة</h2><div class="empty">سجّل الدخول ثم احفظ المنح التي تهمك.</div></section><section class="card" id="journey"><h2>رحلة التقديم</h2><div class="empty">لم تبدأ رحلة منحة بعد.</div></section><section class="card" id="orders"><h2>طلبات الخدمات</h2><div class="empty">لا توجد طلبات حالية.</div></section></div></div></section></main><script src="site.js"></script><script src="motion.js"></script></body></html>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>حساب الطالب | شذرات للمنح</title>
+  <link rel="stylesheet" href="site.css">
+  <link rel="stylesheet" href="motion.css">
+  <link rel="stylesheet" href="logo.css">
+  <link rel="stylesheet" href="nav-universal.css">
+  <style>
+    .student-cover{position:relative;overflow:hidden;padding:26px;background:linear-gradient(135deg,#0c3b2d,#197052);color:#fff;border:0}
+    .student-cover::after{content:"";position:absolute;width:220px;height:220px;left:-70px;top:-120px;border:1px solid rgba(255,255,255,.17);border-radius:50%}
+    .student-top{position:relative;z-index:1;display:flex;align-items:center;gap:16px}
+    .student-avatar{width:72px;height:72px;flex:0 0 72px;display:grid;place-items:center;border-radius:22px;background:linear-gradient(145deg,#fff0cd,#d8a94d);color:#0b3d2e;font-size:27px;font-weight:900;box-shadow:0 12px 28px rgba(0,0,0,.2)}
+    .student-name h2{margin:0 0 3px}.student-name p{margin:0;color:#d7eee4}.student-edit{margin-inline-start:auto;background:#fff!important;color:#12513c!important}
+    .profile-progress{position:relative;z-index:1;margin-top:21px;padding:14px;border-radius:16px;background:rgba(255,255,255,.1)}
+    .progress-title{display:flex;justify-content:space-between;margin-bottom:8px}.progress-title b{color:#f4d17d}.progress-track{height:8px;background:rgba(255,255,255,.2);border-radius:99px;overflow:hidden}.progress-track span{display:block;width:35%;height:100%;background:linear-gradient(90deg,#dcae5a,#ffedb4);border-radius:inherit}
+    .info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.info-item{padding:15px;border:1px solid var(--line);border-radius:16px;background:#fff}.info-item small{display:block;color:var(--muted);margin-bottom:4px}.info-item strong{color:var(--ink)}.info-item.wide{grid-column:1/-1}
+    .chip{display:inline-flex;margin:3px;padding:6px 10px;border-radius:99px;background:var(--soft);color:var(--green);font-size:12px;font-weight:800}
+    .card-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:17px}.card-heading h2{margin:0}.handle{direction:ltr;color:#f0ce78;font-weight:800}
+    @media(max-width:620px){.student-cover{padding:19px}.student-top{align-items:flex-start;flex-wrap:wrap}.student-avatar{width:60px;height:60px;flex-basis:60px;border-radius:18px}.student-name h2{font-size:20px}.student-edit{width:100%;margin:2px 0 0}.info-grid{grid-template-columns:1fr}.info-item.wide{grid-column:auto}}
+  </style>
+</head>
+<body>
+  <header class="site-header"><div class="container nav"><a class="brand" href="index.html"><img class="brand-logo" src="assets/shazarat-logo.png" alt="شذرات للمنح"></a><nav class="nav-links"><a href="scholarships.html">اكتشف المنح</a><a href="services.html">الخدمات</a><a href="contact.html">الدعم</a></nav><a class="btn outline" href="login.html">دخول</a></div></header>
+  <main>
+    <section class="page-hero"><div class="container"><span class="eyebrow">حساب الطالب</span><h1>رحلتك الدراسية في مكان واحد</h1><p class="lead">معلوماتك ومنحك وطلباتك وتقدمك، مرتبة لتعرف خطوتك التالية.</p></div></section>
+    <section class="section" id="overview"><div class="container sidebar-layout">
+      <aside class="card sidebar"><a href="#overview">نظرة عامة</a><a href="#student-info">معلوماتي</a><a href="#saved">المفضلة</a><a href="#journey">رحلة التقديم</a><a href="#orders">طلباتي</a><a href="#rewards">المستوى والمكافآت</a></aside>
+      <div class="grid">
+        <section class="card student-cover"><div class="student-top"><div class="student-avatar">ط</div><div class="student-name"><h2>مرحبًا، اسم الطالب</h2><p class="handle">@student_name</p><p>باحث عن فرص ومنح عالمية</p></div><a class="btn student-edit" href="#student-info">تعديل الملف</a></div><div class="profile-progress"><div class="progress-title"><span>اكتمال الملف الشخصي</span><b>35%</b></div><div class="progress-track"><span></span></div><small>أكمل بياناتك لتحصل على اقتراحات أدق.</small></div></section>
+        <div class="grid grid-3"><div class="stat"><b>0</b>منح محفوظة</div><div class="stat"><b>0</b>طلبات خدمة</div><div class="stat"><b>Level 1</b>0 XP</div></div>
+        <section class="card" id="student-info"><div class="card-heading"><div><span class="eyebrow">ملفي</span><h2>معلومات الطالب</h2></div><button class="btn outline" type="button" data-demo="edit-profile">تعديل</button></div><div class="info-grid">
+          <div class="info-item"><small>الاسم الكامل</small><strong>اسم الطالب</strong></div>
+          <div class="info-item"><small>الاسم الظاهر للطلاب</small><strong class="handle">@student_name</strong></div>
+          <div class="info-item"><small>البريد الإلكتروني</small><strong>student@example.com</strong></div>
+          <div class="info-item"><small>رقم الجوال</small><strong>لم تتم إضافته</strong></div>
+          <div class="info-item"><small>الدولة / المدينة</small><strong>لم يتم تحديدها</strong></div>
+          <div class="info-item"><small>المرحلة الحالية</small><strong>لم يتم تحديدها</strong></div>
+          <div class="info-item"><small>المرحلة المستهدفة</small><strong>بكالوريوس / ماجستير / دكتوراه</strong></div>
+          <div class="info-item"><small>سنة التخرج</small><strong>لم يتم تحديدها</strong></div>
+          <div class="info-item wide"><small>التخصصات والاهتمامات</small><span class="chip">الهندسة</span><span class="chip">علوم الحاسب</span><span class="chip">منح ممولة بالكامل</span></div>
+        </div></section>
+        <section class="card" id="saved"><h2>المفضلة</h2><div class="empty">احفظ المنح التي تهمك لتتابع مواعيدها وتحديثاتها هنا.</div></section>
+        <section class="card" id="journey"><h2>رحلة التقديم</h2><div class="empty">لم تبدأ رحلة منحة بعد. اختر منحة ثم ابدأ متابعة خطواتها.</div></section>
+        <section class="card" id="orders"><h2>طلبات الخدمات</h2><div class="empty">لا توجد طلبات حالية.</div></section>
+      </div>
+    </div></section>
+  </main>
+  <script src="site.js"></script><script src="motion.js"></script><script src="nav-universal.js"></script>
+</body>
+</html>
