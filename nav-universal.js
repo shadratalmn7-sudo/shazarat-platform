@@ -23,6 +23,7 @@
       <nav class="global-menu-links">
         <a href="index.html">الرئيسية</a>
         <a href="scholarships.html">المنح</a>
+        <a href="community.html">مجتمع شذرات</a>
         <a href="services.html">الخدمات</a>
         <a href="offers.html">العروض</a>
         <a href="videos.html">الفيديوهات والقنوات</a>
