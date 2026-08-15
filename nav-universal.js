@@ -35,6 +35,17 @@
     </aside>`;
   document.body.appendChild(menu);
 
+  if (document.body.dataset.role === 'owner') {
+    const links = menu.querySelector('.global-menu-links');
+    links.insertAdjacentHTML('beforeend', `
+      <div style="height:1px;background:#e5ddce;margin:6px 0"></div>
+      <a href="dashboard.html#stats">إحصائيات المالك</a>
+      <a href="dashboard.html#content">إدارة المحتوى</a>
+      <a href="dashboard.html#messages">الرسائل والشكاوى</a>
+      <a href="dashboard.html#ads">الإعلانات والدخل</a>
+      <a href="dashboard.html#security">الأمان والسجل</a>`);
+  }
+
   const page = location.pathname.split('/').pop() || 'index.html';
   menu.querySelectorAll('.global-menu-links a').forEach((link) => {
     if (link.getAttribute('href') === page) {
