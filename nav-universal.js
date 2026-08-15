@@ -85,7 +85,7 @@
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape') setOpen(false); });
   import('./nav-auth.js?v=3').catch(() => {});
   import('./scholarship-extra.js?v=4').catch(() => {});
-  import('./scholarships-live.js?v=1').catch(() => {});
+  import('./scholarships-live.js?v=2').catch(() => {});
   if (document.body.dataset.role === 'owner') import('./admin-navigation.js?v=1').catch(console.error);
   if (location.pathname.endsWith('/admin-scholarships.html')) import('./scholarships-admin.js?v=2').catch(console.error);
   if (location.pathname.endsWith('/admin-analytics.html')) import('./admin-scholarship-analytics.js?v=1').catch(console.error);
