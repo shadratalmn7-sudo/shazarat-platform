@@ -4,6 +4,7 @@
 }
 
 .brand-logo {
+  content: url("assets/shazarat-logo.svg");
   display: block;
   width: clamp(190px, 20vw, 260px);
   height: auto;
