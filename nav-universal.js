@@ -39,11 +39,12 @@
     const links = menu.querySelector('.global-menu-links');
     links.insertAdjacentHTML('beforeend', `
       <div style="height:1px;background:#e5ddce;margin:6px 0"></div>
-      <a href="dashboard.html#stats">إحصائيات المالك</a>
-      <a href="dashboard.html#content">إدارة المحتوى</a>
-      <a href="dashboard.html#messages">الرسائل والشكاوى</a>
-      <a href="dashboard.html#ads">الإعلانات والدخل</a>
-      <a href="dashboard.html#security">الأمان والسجل</a>`);
+      <a href="admin-analytics.html">إحصائيات المالك</a>
+      <a href="admin-scholarships.html">إدارة المنح والمحتوى</a>
+      <a href="admin-orders.html">الطلبات والخدمات</a>
+      <a href="admin-messages.html">الرسائل والشكاوى</a>
+      <a href="admin-revenue.html">الإعلانات والدخل</a>
+      <a href="admin-security.html">الأمان والسجل</a>`);
   }
 
   const page = location.pathname.split('/').pop() || 'index.html';
