@@ -1,5 +1,5 @@
 (()=>{
- const ID='G-XEXLP7S36Z',KEY='shazarat_analytics_consent';
+ const ID='G-3QS0BEJYER',KEY='shazarat_analytics_consent';
  const start=()=>{if(window.gtag)return;window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments)};const s=document.createElement('script');s.async=true;s.src=`https://www.googletagmanager.com/gtag/js?id=${ID}`;document.head.appendChild(s);gtag('js',new Date());gtag('config',ID,{anonymize_ip:true,send_page_view:true});
   const path=location.pathname.split('/').pop()||'index.html';if(/open-doors|education-in-russia|turkiye-scholarships|stipendium-hungaricum|hse-scholarship|rudn-scholarship|nsu-scholarship/.test(path))gtag('event','scholarship_view',{scholarship_slug:path.replace('.html','')});
   document.addEventListener('click',e=>{const a=e.target.closest('a,button');if(!a)return;const text=(a.textContent||'').trim().slice(0,80),href=a.getAttribute('href')||'';if(a.matches('.official')||/المصدر|الموقع الرسمي/.test(text))gtag('event','official_source_click',{link_url:href,link_text:text});if(/اطلب الخدمة|طلب الخدمة/.test(text))gtag('event','service_request_start',{service_name:text});});
