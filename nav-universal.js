@@ -17,7 +17,7 @@
     <div class="global-menu-backdrop" data-menu-close></div>
     <aside class="global-menu-panel" aria-label="قائمة الموقع">
       <div class="global-menu-head">
-        <img class="brand-logo" src="assets/shazarat-logo.png" alt="شذرات للمنح">
+        <img class="brand-logo" src="assets/shazarat-logo.svg" alt="شذرات للمنح">
         <button class="global-menu-close" type="button" aria-label="إغلاق القائمة" data-menu-close>×</button>
       </div>
       <nav class="global-menu-links">
