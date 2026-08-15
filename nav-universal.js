@@ -69,7 +69,7 @@
   menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setOpen(false)));
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape') setOpen(false); });
   import('./nav-auth.js?v=3').catch(() => {});
-  import('./scholarship-extra.js?v=1').catch(() => {});
+  import('./scholarship-extra.js?v=2').catch(() => {});
   import('./analytics.js?v=1').catch(() => {});
   import('./admin-live-data.js?v=1').catch(() => {});
 })();
