@@ -4,6 +4,7 @@
   const panels = panelNames.flatMap((name) => [...document.querySelectorAll(`[data-profile-panel="${name}"], #${name}`)]);
 
   function openPanel(name, updateUrl = true) {
+    if (name === 'missions') name = 'level';
     if (!panelNames.includes(name)) name = 'student-info';
 
     tabs.forEach((tab) => {
@@ -14,8 +15,9 @@
 
     panels.forEach((panel) => {
       const panelName = panel.dataset.profilePanel || panel.id;
-      panel.classList.toggle('is-active', panelName === name);
-      panel.hidden = panelName !== name;
+      const active = panelName === name || (name === 'level' && panelName === 'missions');
+      panel.classList.toggle('is-active', active);
+      panel.hidden = !active;
     });
 
     if (updateUrl) history.replaceState(null, '', `#${name}`);
