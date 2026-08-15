@@ -25,6 +25,7 @@
         <a href="scholarships.html">المنح</a>
         <a href="services.html">الخدمات</a>
         <a href="offers.html">العروض</a>
+        <a href="videos.html">الفيديوهات والقنوات</a>
         <a href="contact.html">تواصل معنا</a>
         <a href="profile.html">حساب الطالب</a>
       </nav>
