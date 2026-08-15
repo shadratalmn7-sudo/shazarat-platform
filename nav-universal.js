@@ -1,6 +1,13 @@
 (() => {
-  const nav = document.querySelector('header .nav');
-  if (!nav || document.querySelector('.global-hamburger')) return;
+  let nav = document.querySelector('header .nav');
+  if (!nav) {
+    const header = document.createElement('header');
+    header.className = 'site-header global-site-header';
+    header.innerHTML = `<div class="container nav"><a class="brand" href="index.html"><img class="brand-logo" src="assets/shazarat-logo.svg" alt="شذرات للمنح"></a></div>`;
+    document.body.prepend(header);
+    nav = header.querySelector('.nav');
+  }
+  if (document.querySelector('.global-hamburger')) return;
 
   const button = document.createElement('button');
   button.className = 'global-hamburger';
@@ -69,7 +76,9 @@
   menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setOpen(false)));
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape') setOpen(false); });
   import('./nav-auth.js?v=3').catch(() => {});
-  import('./scholarship-extra.js?v=2').catch(() => {});
+  import('./scholarship-extra.js?v=4').catch(() => {});
+  import('./scholarships-live.js?v=1').catch(() => {});
+  if (location.pathname.endsWith('/admin-scholarships.html')) import('./scholarships-admin.js?v=1').catch(console.error);
   import('./analytics.js?v=1').catch(() => {});
   import('./admin-live-data.js?v=1').catch(() => {});
 })();
