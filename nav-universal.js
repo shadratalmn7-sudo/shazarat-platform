@@ -68,4 +68,5 @@
   menu.querySelectorAll('[data-menu-close]').forEach((item) => item.addEventListener('click', () => setOpen(false)));
   menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setOpen(false)));
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape') setOpen(false); });
+  import('./nav-auth.js?v=2').catch(() => {});
 })();
