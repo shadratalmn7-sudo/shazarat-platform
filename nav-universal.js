@@ -8,105 +8,12 @@
     nav = header.querySelector('.nav');
   }
   if (document.querySelector('.global-hamburger')) return;
-
-  const button = document.createElement('button');
-  button.className = 'global-hamburger';
-  button.type = 'button';
-  button.setAttribute('aria-label', 'فتح القائمة');
-  button.setAttribute('aria-expanded', 'false');
-  button.innerHTML = '<span aria-hidden="true">☰</span>';
-  nav.appendChild(button);
-
-  const menu = document.createElement('div');
-  menu.className = 'global-menu';
-  menu.setAttribute('aria-hidden', 'true');
-  menu.innerHTML = `
-    <div class="global-menu-backdrop" data-menu-close></div>
-    <aside class="global-menu-panel" aria-label="قائمة الموقع">
-      <div class="global-menu-head">
-        <img class="brand-logo" src="assets/shazarat-logo.svg" alt="شذرات للمنح">
-        <button class="global-menu-close" type="button" aria-label="إغلاق القائمة" data-menu-close>×</button>
-      </div>
-      <nav class="global-menu-links">
-        <a href="index.html">الرئيسية</a>
-        <a href="scholarships.html">المنح</a>
-        <a href="community.html">مجتمع شذرات</a>
-        <a href="services.html">الخدمات</a>
-        <a href="offers.html">العروض</a>
-        <a href="videos.html">الفيديوهات والقنوات</a>
-        <a href="contact.html">تواصل معنا</a>
-        <a href="profile.html">حساب الطالب</a>
-      </nav>
-      <div class="global-menu-actions">
-        <a href="login.html">تسجيل الدخول</a>
-        <a class="primary" href="register.html">إنشاء حساب</a>
-      </div>
-    </aside>`;
-  document.body.appendChild(menu);
-
-  if (document.body.dataset.role === 'owner') {
-    const links = menu.querySelector('.global-menu-links');
-    links.insertAdjacentHTML('beforeend', `
-      <div style="height:1px;background:#e5ddce;margin:6px 0"></div>
-      <a href="admin-analytics.html">إحصائيات المالك</a>
-      <a href="admin-homepage.html">إدارة الرئيسية</a>
-      <a href="admin-scholarships.html">إدارة المنح</a>
-      <a href="admin-services.html">إدارة الخدمات</a>
-      <a href="admin-offers.html">إدارة العروض</a>
-      <a href="admin-orders.html">طلبات الخدمات</a>
-      <a href="admin-community.html">إدارة المجتمع</a>
-      <a href="admin-videos.html">إدارة الفيديوهات</a>
-      <a href="admin-users.html">المستخدمون والفريق</a>
-      <a href="admin-gamification.html">XP والمهمات والجوائز</a>
-      <a href="admin-announcements.html">التنبيهات</a>
-      <a href="admin-messages.html">الرسائل والشكاوى</a>
-      <a href="admin-revenue.html">الإعلانات والدخل</a>
-      <a href="admin-security.html">الأمان والسجل</a>`);
-  }
-
-  const page = location.pathname.split('/').pop() || 'index.html';
-  menu.querySelectorAll('.global-menu-links a').forEach((link) => {
-    if (link.getAttribute('href') === page) {
-      link.classList.add('is-current');
-      link.setAttribute('aria-current', 'page');
-    }
-  });
-
-  const setOpen = (open) => {
-    menu.classList.toggle('is-open', open);
-    menu.setAttribute('aria-hidden', String(!open));
-    button.setAttribute('aria-expanded', String(open));
-    document.body.classList.toggle('menu-open', open);
-  };
-
-  button.addEventListener('click', () => setOpen(true));
-  menu.querySelectorAll('[data-menu-close]').forEach((item) => item.addEventListener('click', () => setOpen(false)));
-  menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setOpen(false)));
-  document.addEventListener('keydown', (event) => { if (event.key === 'Escape') setOpen(false); });
-  import('./nav-auth.js?v=3').catch(() => {});
-  import('./notifications-live.js?v=1').catch(() => {});
-  import('./scholarship-extra.js?v=4').catch(() => {});
-  import('./scholarships-live.js?v=2').catch(() => {});
-  import('./homepage-fixes.js?v=1').catch(() => {});
-  import('./homepage-live.js?v=1').catch(() => {});
-  if (location.pathname.endsWith('/community.html')) import('./community-filters-live.js?v=1').catch(console.error);
-  const adminPage = location.pathname.split('/').pop()?.startsWith('admin-');
-  if (adminPage) import('./admin-access.js?v=1').then(({requireAdmin})=>requireAdmin()).then(()=>{
-    import('./admin-navigation.js?v=1').catch(console.error);
-    if (location.pathname.endsWith('/admin-scholarships.html')) import('./scholarships-admin.js?v=2').catch(console.error);
-    if (location.pathname.endsWith('/admin-analytics.html')) import('./admin-scholarship-analytics.js?v=1').catch(console.error);
-    if (location.pathname.endsWith('/admin-users.html')) import('./admin-users.js?v=4').catch(console.error);
-    if (location.pathname.endsWith('/admin-student.html')) import('./admin-student.js?v=1').catch(console.error);
-    if (location.pathname.endsWith('/admin-gamification.html')) import('./admin-gamification.js?v=3').catch(console.error);
-    if (location.pathname.endsWith('/admin-community.html')) import('./admin-community.js?v=1').catch(console.error);
-    if (location.pathname.endsWith('/admin-services.html') || location.pathname.endsWith('/admin-offers.html')) import('./admin-commerce.js?v=1').catch(console.error);
-    if (location.pathname.endsWith('/admin-orders.html')) import('./admin-orders.js?v=1').catch(console.error);
-    if (location.pathname.endsWith('/admin-messages.html')) import('./admin-messages.js?v=1').catch(console.error);
-    if (location.pathname.endsWith('/admin-announcements.html')) import('./admin-announcements.js?v=1').catch(console.error);
-  }).catch(()=>location.replace('login.html?admin=1'));
-  if (location.pathname.endsWith('/services.html') || location.pathname.endsWith('/offers.html')) import('./public-commerce-live.js?v=2').catch(console.error);
-  if (location.pathname.endsWith('/contact.html')) import('./contact-live.js?v=1').catch(console.error);
-  if (location.pathname.endsWith('/profile.html')) import('./profile-gamification-live.js?v=1').catch(console.error);
-  import('./analytics.js?v=1').catch(() => {});
-  import('./admin-live-data.js?v=1').catch(() => {});
+  const button = document.createElement('button');button.className='global-hamburger';button.type='button';button.setAttribute('aria-label','فتح القائمة');button.setAttribute('aria-expanded','false');button.innerHTML='<span aria-hidden="true">☰</span>';nav.appendChild(button);
+  const menu=document.createElement('div');menu.className='global-menu';menu.setAttribute('aria-hidden','true');menu.innerHTML=`<div class="global-menu-backdrop" data-menu-close></div><aside class="global-menu-panel" aria-label="قائمة الموقع"><div class="global-menu-head"><img class="brand-logo" src="assets/shazarat-logo.svg" alt="شذرات للمنح"><button class="global-menu-close" type="button" aria-label="إغلاق القائمة" data-menu-close>×</button></div><nav class="global-menu-links"><a href="index.html">الرئيسية</a><a href="scholarships.html">المنح</a><a href="community.html">مجتمع شذرات</a><a href="services.html">الخدمات</a><a href="offers.html">العروض</a><a href="videos.html">الفيديوهات والقنوات</a><a href="contact.html">تواصل معنا</a><a href="profile.html">حساب الطالب</a></nav><div class="global-menu-actions"><a href="login.html">تسجيل الدخول</a><a class="primary" href="register.html">إنشاء حساب</a></div></aside>`;document.body.appendChild(menu);
+  const page=location.pathname.split('/').pop()||'index.html';menu.querySelectorAll('.global-menu-links a').forEach(link=>{if(link.getAttribute('href')===page){link.classList.add('is-current');link.setAttribute('aria-current','page')}});
+  const setOpen=open=>{menu.classList.toggle('is-open',open);menu.setAttribute('aria-hidden',String(!open));button.setAttribute('aria-expanded',String(open));document.body.classList.toggle('menu-open',open)};button.addEventListener('click',()=>setOpen(true));menu.querySelectorAll('[data-menu-close]').forEach(item=>item.addEventListener('click',()=>setOpen(false)));menu.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>setOpen(false)));document.addEventListener('keydown',event=>{if(event.key==='Escape')setOpen(false)});
+  import('./nav-auth.js?v=3').catch(()=>{});import('./notifications-live.js?v=1').catch(()=>{});import('./scholarship-extra.js?v=4').catch(()=>{});import('./scholarships-live.js?v=3').catch(()=>{});import('./homepage-fixes.js?v=1').catch(()=>{});import('./homepage-live.js?v=1').catch(()=>{});
+  if(location.pathname.endsWith('/community.html'))import('./community-filters-live.js?v=1').catch(console.error);
+  const adminPage=page.startsWith('admin-');if(adminPage)import('./admin-access.js?v=1').then(({requireAdmin})=>requireAdmin()).then(()=>{import('./admin-navigation.js?v=2').catch(console.error);if(location.pathname.endsWith('/admin-scholarships.html'))import('./scholarships-admin.js?v=2').catch(console.error);if(location.pathname.endsWith('/admin-analytics.html'))import('./admin-dashboard-live.js?v=1').catch(console.error);if(location.pathname.endsWith('/admin-users.html'))import('./admin-users.js?v=4').catch(console.error);if(location.pathname.endsWith('/admin-student.html'))import('./admin-student.js?v=1').catch(console.error);if(location.pathname.endsWith('/admin-staff.html'))import('./admin-staff.js?v=1').catch(console.error);if(location.pathname.endsWith('/admin-gamification.html'))import('./admin-gamification.js?v=3').catch(console.error);if(location.pathname.endsWith('/admin-community.html'))import('./admin-community.js?v=1').catch(console.error);if(location.pathname.endsWith('/admin-services.html')||location.pathname.endsWith('/admin-offers.html'))import('./admin-commerce.js?v=1').catch(console.error);if(location.pathname.endsWith('/admin-orders.html'))import('./admin-orders.js?v=1').catch(console.error);if(location.pathname.endsWith('/admin-messages.html'))import('./admin-messages.js?v=2').catch(console.error);if(location.pathname.endsWith('/admin-announcements.html'))import('./admin-announcements.js?v=1').catch(console.error)}).catch(()=>location.replace('login.html?admin=1'));
+  if(location.pathname.endsWith('/services.html')||location.pathname.endsWith('/offers.html'))import('./public-commerce-live.js?v=3').catch(console.error);if(location.pathname.endsWith('/contact.html'))import('./contact-live.js?v=1').catch(console.error);if(location.pathname.endsWith('/profile.html'))import('./profile-gamification-live.js?v=1').catch(console.error);import('./analytics.js?v=1').catch(()=>{});
 })();
