@@ -87,12 +87,14 @@
   import('./notifications-live.js?v=1').catch(() => {});
   import('./scholarship-extra.js?v=4').catch(() => {});
   import('./scholarships-live.js?v=2').catch(() => {});
+  import('./homepage-fixes.js?v=1').catch(() => {});
   const adminPage = location.pathname.split('/').pop()?.startsWith('admin-');
   if (adminPage) import('./admin-access.js?v=1').then(({requireAdmin})=>requireAdmin()).then(()=>{
     import('./admin-navigation.js?v=1').catch(console.error);
     if (location.pathname.endsWith('/admin-scholarships.html')) import('./scholarships-admin.js?v=2').catch(console.error);
     if (location.pathname.endsWith('/admin-analytics.html')) import('./admin-scholarship-analytics.js?v=1').catch(console.error);
-    if (location.pathname.endsWith('/admin-users.html')) import('./admin-users.js?v=3').catch(console.error);
+    if (location.pathname.endsWith('/admin-users.html')) import('./admin-users.js?v=4').catch(console.error);
+    if (location.pathname.endsWith('/admin-student.html')) import('./admin-student.js?v=1').catch(console.error);
     if (location.pathname.endsWith('/admin-gamification.html')) import('./admin-gamification.js?v=3').catch(console.error);
     if (location.pathname.endsWith('/admin-community.html')) import('./admin-community.js?v=1').catch(console.error);
     if (location.pathname.endsWith('/admin-services.html') || location.pathname.endsWith('/admin-offers.html')) import('./admin-commerce.js?v=1').catch(console.error);
