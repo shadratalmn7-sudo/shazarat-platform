@@ -88,6 +88,7 @@
   import('./scholarship-extra.js?v=4').catch(() => {});
   import('./scholarships-live.js?v=2').catch(() => {});
   import('./homepage-fixes.js?v=1').catch(() => {});
+  import('./homepage-live.js?v=1').catch(() => {});
   if (location.pathname.endsWith('/community.html')) import('./community-filters-live.js?v=1').catch(console.error);
   const adminPage = location.pathname.split('/').pop()?.startsWith('admin-');
   if (adminPage) import('./admin-access.js?v=1').then(({requireAdmin})=>requireAdmin()).then(()=>{
