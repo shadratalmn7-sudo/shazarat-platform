@@ -6,7 +6,8 @@ service cloud.firestore {
     function userDoc() { return get(/databases/$(database)/documents/users/$(request.auth.uid)); }
     function activeUser() { return signedIn() && userDoc().data.accountStatus == 'active'; }
     function roleIs(role) { return activeUser() && userDoc().data.role == role; }
-    function fixedOwner() { return signedIn() && request.auth.token.email_verified == true && request.auth.token.email == 'shadrat.almn7@gmail.com'; }
+    // The owner account is controlled by Firebase Authentication. It must not depend on a Firestore role record.
+    function fixedOwner() { return signedIn() && request.auth.token.email == 'shadrat.almn7@gmail.com'; }
     function ownerOnly() { return fixedOwner() || roleIs('owner'); }
     function adminRole() { return ownerOnly() || roleIs('admin'); }
     function contentStaff() { return adminRole() || roleIs('editor'); }
@@ -26,10 +27,10 @@ service cloud.firestore {
           'fullName','username','location','studyLevel','publicProfile','avatarKey','updatedAt'
         ]);
       allow update: if ownerOnly();
-      allow delete: if false;
+      allow delete: if ownerOnly();
 
       match /notifications/{notificationId} {
-        allow read, update: if own(uid);
+        allow read, update: if own(uid) || supportStaff();
         allow create: if adminRole() || roleIs('support');
         allow delete: if own(uid) || adminRole() || roleIs('support');
       }
@@ -38,7 +39,7 @@ service cloud.firestore {
     match /phoneReservations/{phoneHash} {
       allow create: if signedIn() && request.resource.data.uid == request.auth.uid && phoneHash.size() == 64;
       allow read: if signedIn() && (resource.data.uid == request.auth.uid || supportStaff());
-      allow update, delete: if false;
+      allow update, delete: if ownerOnly();
     }
 
     match /usernameReservations/{username} {
@@ -46,8 +47,8 @@ service cloud.firestore {
         && username.matches('^[a-z0-9_]{3,24}$')
         && !username.matches('.*(owner|admin|support|staff|shazarat).*');
       allow read: if signedIn() && (resource.data.uid == request.auth.uid || supportStaff());
-      allow update: if signedIn() && resource.data.uid == request.auth.uid && request.resource.data.uid == request.auth.uid;
-      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+      allow update: if (signedIn() && resource.data.uid == request.auth.uid && request.resource.data.uid == request.auth.uid) || ownerOnly();
+      allow delete: if (signedIn() && resource.data.uid == request.auth.uid) || ownerOnly();
     }
 
     match /scholarships/{slug} {
@@ -60,18 +61,18 @@ service cloud.firestore {
         && request.resource.data.publishStatus in ['draft','published','hidden','archived']
         && safeText(request.resource.data.title, 3, 160)
         && safeText(request.resource.data.shortDescription, 10, 500);
-      allow delete: if false;
+      allow delete: if ownerOnly();
     }
 
     match /services/{serviceId} {
       allow read: if resource.data.publishStatus == 'published' || contentStaff();
       allow create, update: if contentStaff() && request.resource.data.publishStatus in ['draft','published','hidden','archived'] && safeText(request.resource.data.title,3,160);
-      allow delete: if false;
+      allow delete: if ownerOnly();
     }
     match /offers/{offerId} {
       allow read: if resource.data.publishStatus == 'published' || contentStaff();
       allow create, update: if contentStaff() && request.resource.data.publishStatus in ['draft','published','hidden','archived'] && safeText(request.resource.data.title,3,160);
-      allow delete: if false;
+      allow delete: if ownerOnly();
     }
 
     match /messages/{messageId} {
@@ -83,7 +84,7 @@ service cloud.firestore {
         && request.resource.data.status == 'new';
       allow read: if supportStaff() || (signedIn() && resource.data.userId == request.auth.uid);
       allow update: if supportStaff();
-      allow delete: if false;
+      allow delete: if ownerOnly();
     }
 
     match /orders/{orderId} {
@@ -92,7 +93,7 @@ service cloud.firestore {
         && request.resource.data.status == 'created';
       allow read: if supportStaff() || (signedIn() && resource.data.userId == request.auth.uid);
       allow update: if supportStaff();
-      allow delete: if false;
+      allow delete: if ownerOnly();
     }
 
     match /announcements/{announcementId} {
@@ -112,7 +113,7 @@ service cloud.firestore {
         && request.resource.data.targetType in ['all','user']
         && request.resource.data.xp is int && request.resource.data.xp >= 0 && request.resource.data.xp <= 2000
         && safeText(request.resource.data.title, 3, 160);
-      allow delete: if false;
+      allow delete: if ownerOnly();
     }
 
     match /rewards/{rewardId} {
@@ -122,7 +123,7 @@ service cloud.firestore {
         && request.resource.data.publishStatus in ['draft','published','disabled','archived']
         && request.resource.data.targetType in ['all','user']
         && safeText(request.resource.data.title, 3, 160);
-      allow delete: if false;
+      allow delete: if ownerOnly();
     }
 
     match /publicProfiles/{uid} {
@@ -150,7 +151,7 @@ service cloud.firestore {
         && request.resource.data.saveCount == resource.data.saveCount
         && safeText(request.resource.data.body, 10, 5000) && validPostType(request.resource.data.type);
       allow update: if communityStaff();
-      allow delete: if false;
+      allow delete: if ownerOnly();
 
       match /comments/{commentId} {
         allow read: if get(/databases/$(database)/documents/communityPosts/$(postId)).data.status == 'published' || communityStaff();
@@ -164,17 +165,17 @@ service cloud.firestore {
           && request.resource.data.status == resource.data.status
           && safeText(request.resource.data.body, 2, 2000);
         allow update: if communityStaff();
-        allow delete: if false;
-        match /helpful/{uid} { allow read: if signedIn(); allow create: if own(uid) && get(/databases/$(database)/documents/communityPosts/$(postId)/comments/$(commentId)).data.authorId != request.auth.uid; allow delete: if own(uid); allow update: if false; }
+        allow delete: if ownerOnly();
+        match /helpful/{uid} { allow read: if signedIn(); allow create: if own(uid) && get(/databases/$(database)/documents/communityPosts/$(postId)/comments/$(commentId)).data.authorId != request.auth.uid; allow delete: if own(uid) || ownerOnly(); allow update: if false; }
       }
-      match /helpful/{uid} { allow read: if signedIn(); allow create: if own(uid) && get(/databases/$(database)/documents/communityPosts/$(postId)).data.authorId != request.auth.uid; allow delete: if own(uid); allow update: if false; }
+      match /helpful/{uid} { allow read: if signedIn(); allow create: if own(uid) && get(/databases/$(database)/documents/communityPosts/$(postId)).data.authorId != request.auth.uid; allow delete: if own(uid) || ownerOnly(); allow update: if false; }
     }
 
-    match /savedCommunityPosts/{saveId} { allow read: if signedIn() && resource.data.userId == request.auth.uid; allow create: if activeUser() && request.resource.data.userId == request.auth.uid; allow delete: if signedIn() && resource.data.userId == request.auth.uid; allow update: if false; }
-    match /communityReports/{reportId} { allow create: if activeUser() && request.resource.data.reporterId == request.auth.uid && safeText(request.resource.data.reason, 5, 500) && request.resource.data.status == 'open'; allow read, update: if communityStaff(); allow delete: if false; }
-    match /expertApplications/{applicationId} { allow create: if activeUser() && request.resource.data.userId == request.auth.uid && request.resource.data.status == 'pending'; allow read: if adminRole() || (signedIn() && resource.data.userId == request.auth.uid); allow update: if adminRole(); allow delete: if false; }
-    match /moderationActions/{actionId} { allow read, create: if communityStaff(); allow update, delete: if false; }
-    match /xpTransactions/{transactionId} { allow read: if signedIn() && (resource.data.userId == request.auth.uid || adminRole()); allow create: if adminRole() && request.resource.data.points is int && request.resource.data.userId is string && safeText(request.resource.data.reason, 3, 300); allow update, delete: if false; }
-    match /{document=**} { allow read, write: if false; }
+    match /savedCommunityPosts/{saveId} { allow read: if signedIn() && (resource.data.userId == request.auth.uid || ownerOnly()); allow create: if activeUser() && request.resource.data.userId == request.auth.uid; allow delete: if (signedIn() && resource.data.userId == request.auth.uid) || ownerOnly(); allow update: if false; }
+    match /communityReports/{reportId} { allow create: if activeUser() && request.resource.data.reporterId == request.auth.uid && safeText(request.resource.data.reason, 5, 500) && request.resource.data.status == 'open'; allow read, update: if communityStaff(); allow delete: if ownerOnly(); }
+    match /expertApplications/{applicationId} { allow create: if activeUser() && request.resource.data.userId == request.auth.uid && request.resource.data.status == 'pending'; allow read: if adminRole() || (signedIn() && resource.data.userId == request.auth.uid); allow update: if adminRole(); allow delete: if ownerOnly(); }
+    match /moderationActions/{actionId} { allow read, create: if communityStaff(); allow update: if ownerOnly(); allow delete: if ownerOnly(); }
+    match /xpTransactions/{transactionId} { allow read: if signedIn() && (resource.data.userId == request.auth.uid || adminRole()); allow create: if adminRole() && request.resource.data.points is int && request.resource.data.userId is string && safeText(request.resource.data.reason, 3, 300); allow update: if ownerOnly(); allow delete: if ownerOnly(); }
+    match /{document=**} { allow read, write: if ownerOnly(); }
   }
 }
