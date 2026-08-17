@@ -1,0 +1,36 @@
+name: Refresh production cache
+on:
+  push:
+    paths:
+      - '.github/workflows/refresh-production-cache.yml'
+permissions:
+  contents: write
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Refresh homepage asset versions and direct links
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('href="nav-universal.css"', 'href="nav-universal.css?v=18"')
+          s = s.replace('src="nav-universal.js?v=11"', 'src="nav-universal.js?v=18"')
+          s = s.replace('<span class="btn outline">أنشئ حسابك مجانًا</span>', '<a class="btn outline" data-guest-only href="register.html">أنشئ حسابك مجانًا</a>')
+          s = s.replace('<b style="color:#176b4b">عرض جميع المنح ←</b>', '<a href="scholarships.html" style="color:#176b4b;font-weight:900">عرض جميع المنح ←</a>')
+          s = s.replace('<span class="detail">التفاصيل</span>', '<a class="detail" href="turkiye-scholarships.html">التفاصيل</a>')
+          s = s.replace('<span class="dark">إنشاء حساب</span>', '<a class="dark" data-guest-only href="register.html">إنشاء حساب</a>')
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit homepage refresh
+        run: |
+          git config user.name "shadratalmn7-sudo"
+          git config user.email "shadrat.almn7@gmail.com"
+          git add index.html
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Refresh production homepage assets and links"
+          git push origin main
