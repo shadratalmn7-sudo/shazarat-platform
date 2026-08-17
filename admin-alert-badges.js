@@ -1,0 +1,10 @@
+import{getApp,getApps,initializeApp}from'https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js';
+import{collection,getDocs,getFirestore}from'https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js';
+import{firebaseConfig}from'./firebase-config.js';
+const app=getApps().length?getApp():initializeApp(firebaseConfig),db=getFirestore(app);
+const read=async name=>{try{const s=await getDocs(collection(db,name));return s.docs.map(d=>({id:d.id,...d.data()}))}catch(e){console.warn('admin badge',name,e);return[]}};
+const isPendingMessage=x=>['new','open','waiting',undefined,null].includes(x.status);
+const isPendingOrder=x=>['created','waiting_info','action_needed'].includes(x.status);
+const paint=(key,count,title='')=>{document.querySelectorAll(`[data-admin-badge="${key}"]`).forEach(b=>{b.textContent=Number(count||0).toLocaleString('ar');b.hidden=!count;if(title)b.title=title})};
+async function load(){const [messages,orders,reports,experts,posts]=await Promise.all(['messages','orders','communityReports','expertApplications','communityPosts'].map(read));const supportMessages=messages.filter(isPendingMessage),supportOrders=orders.filter(isPendingOrder),openReports=reports.filter(x=>x.status==='open'),pendingExperts=experts.filter(x=>x.status==='pending'),pendingPosts=posts.filter(x=>x.status==='pendingReview');const support=supportMessages.length+supportOrders.length,community=openReports.length+pendingExperts.length+pendingPosts.length,total=support+community;paint('support',support,`${supportMessages.length} رسائل/شكاوى + ${supportOrders.length} طلبات تحتاج متابعة`);paint('community',community,`${openReports.length} بلاغات + ${pendingExperts.length} طلبات خبراء + ${pendingPosts.length} منشورات للمراجعة`);paint('overview',total,`${total} عناصر تحتاج انتباه الإدارة`)}
+const observer=new MutationObserver(()=>{observer.disconnect();load().finally(()=>observer.observe(document.body,{childList:true,subtree:true}))});observer.observe(document.body,{childList:true,subtree:true});load();setInterval(load,60000);
