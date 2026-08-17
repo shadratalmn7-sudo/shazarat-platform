@@ -84,6 +84,7 @@
   menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setOpen(false)));
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape') setOpen(false); });
   import('./nav-auth.js?v=3').catch(() => {});
+  import('./notifications-live.js?v=1').catch(() => {});
   import('./scholarship-extra.js?v=4').catch(() => {});
   import('./scholarships-live.js?v=2').catch(() => {});
   const adminPage = location.pathname.split('/').pop()?.startsWith('admin-');
@@ -91,12 +92,16 @@
     import('./admin-navigation.js?v=1').catch(console.error);
     if (location.pathname.endsWith('/admin-scholarships.html')) import('./scholarships-admin.js?v=2').catch(console.error);
     if (location.pathname.endsWith('/admin-analytics.html')) import('./admin-scholarship-analytics.js?v=1').catch(console.error);
-    if (location.pathname.endsWith('/admin-users.html')) import('./admin-users.js?v=2').catch(console.error);
-    if (location.pathname.endsWith('/admin-gamification.html')) import('./admin-gamification.js?v=2').catch(console.error);
+    if (location.pathname.endsWith('/admin-users.html')) import('./admin-users.js?v=3').catch(console.error);
+    if (location.pathname.endsWith('/admin-gamification.html')) import('./admin-gamification.js?v=3').catch(console.error);
     if (location.pathname.endsWith('/admin-community.html')) import('./admin-community.js?v=1').catch(console.error);
     if (location.pathname.endsWith('/admin-services.html') || location.pathname.endsWith('/admin-offers.html')) import('./admin-commerce.js?v=1').catch(console.error);
+    if (location.pathname.endsWith('/admin-orders.html')) import('./admin-orders.js?v=1').catch(console.error);
+    if (location.pathname.endsWith('/admin-messages.html')) import('./admin-messages.js?v=1').catch(console.error);
+    if (location.pathname.endsWith('/admin-announcements.html')) import('./admin-announcements.js?v=1').catch(console.error);
   }).catch(()=>location.replace('login.html?admin=1'));
-  if (location.pathname.endsWith('/services.html') || location.pathname.endsWith('/offers.html')) import('./public-commerce-live.js?v=1').catch(console.error);
+  if (location.pathname.endsWith('/services.html') || location.pathname.endsWith('/offers.html')) import('./public-commerce-live.js?v=2').catch(console.error);
+  if (location.pathname.endsWith('/contact.html')) import('./contact-live.js?v=1').catch(console.error);
   if (location.pathname.endsWith('/profile.html')) import('./profile-gamification-live.js?v=1').catch(console.error);
   import('./analytics.js?v=1').catch(() => {});
   import('./admin-live-data.js?v=1').catch(() => {});
