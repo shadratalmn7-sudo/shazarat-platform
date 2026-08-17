@@ -3,4 +3,20 @@ import{getAuth,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/12.2.1
 import{doc,getDoc,getFirestore}from'https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js';
 import{firebaseConfig}from'./firebase-config.js';
 const app=getApps().length?getApp():initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),OWNER='shadrat.almn7@gmail.com';
-export async function requireAdmin(){return new Promise((resolve,reject)=>{const stop=onAuthStateChanged(auth,async user=>{stop();if(!user)return reject(new Error('not-authenticated'));try{const snap=await getDoc(doc(db,'users',user.uid)),role=user.email===OWNER?'owner':snap.data()?.role;if(!['owner','support'].includes(role))return reject(new Error('not-authorized'));resolve({user,role})}catch(error){reject(error)}})})}
+const pageAccess={
+'admin-staff.html':['owner'],
+'admin-users.html':['owner','admin','support'],
+'admin-scholarships.html':['owner','admin','editor'],
+'admin-services.html':['owner','admin','editor'],
+'admin-offers.html':['owner','admin','editor'],
+'admin-videos.html':['owner','admin','editor'],
+'admin-homepage.html':['owner','admin','editor'],
+'admin-orders.html':['owner','admin','support'],
+'admin-messages.html':['owner','admin','support'],
+'admin-community.html':['owner','admin','communityModerator'],
+'admin-gamification.html':['owner','admin'],
+'admin-announcements.html':['owner','admin'],
+'admin-security.html':['owner','admin'],
+'admin-revenue.html':['owner','admin'],
+'admin-analytics.html':['owner','admin','support','editor','communityModerator']};
+export async function requireAdmin(){return new Promise((resolve,reject)=>{const stop=onAuthStateChanged(auth,async user=>{stop();if(!user)return reject(new Error('not-authenticated'));try{const snap=await getDoc(doc(db,'users',user.uid)),role=user.email===OWNER?'owner':snap.data()?.role||'student',page=location.pathname.split('/').pop();const allowed=pageAccess[page]||['owner','admin'];if(!allowed.includes(role))return reject(new Error('not-authorized'));resolve({user,role})}catch(error){reject(error)}})})}
