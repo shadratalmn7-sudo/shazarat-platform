@@ -6,6 +6,7 @@ const app=getApps().length?getApp():initializeApp(firebaseConfig),auth=getAuth(a
 const pageAccess={
 'admin-staff.html':['owner'],
 'admin-users.html':['owner','admin','support'],
+'admin-student.html':['owner','admin','support'],
 'admin-scholarships.html':['owner','admin','editor'],
 'admin-services.html':['owner','admin','editor'],
 'admin-offers.html':['owner','admin','editor'],
