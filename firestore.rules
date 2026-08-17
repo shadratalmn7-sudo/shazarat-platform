@@ -18,17 +18,16 @@ service cloud.firestore {
         && request.resource.data.publicProfile == false;
       allow read: if own(uid) || ownerOnly();
       allow update: if own(uid)
-        && request.resource.data.role == resource.data.role
-        && request.resource.data.accountStatus == resource.data.accountStatus
-        && request.resource.data.xp == resource.data.xp
-        && request.resource.data.phoneHash == resource.data.phoneHash;
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'fullName','username','location','studyLevel','publicProfile','avatarKey','updatedAt'
+        ]);
       allow update: if ownerOnly();
       allow delete: if false;
 
       match /notifications/{notificationId} {
         allow read, update: if own(uid);
         allow create: if moderator();
-        allow delete: if false;
+        allow delete: if own(uid) || moderator();
       }
     }
 
@@ -46,7 +45,8 @@ service cloud.firestore {
         && username.matches('^[a-z0-9_]{3,24}$')
         && !username.matches('.*(owner|admin|support|staff|shazarat).*');
       allow read: if signedIn() && (resource.data.uid == request.auth.uid || ownerOnly());
-      allow update, delete: if false;
+      allow update: if signedIn() && resource.data.uid == request.auth.uid && request.resource.data.uid == request.auth.uid;
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
     }
 
     match /scholarships/{slug} {
@@ -74,6 +74,38 @@ service cloud.firestore {
       allow read: if resource.data.publishStatus == 'published' || moderator();
       allow create, update: if ownerOnly() && request.resource.data.publishStatus in ['draft','published','hidden','archived'] && safeText(request.resource.data.title,3,160);
       allow delete: if false;
+    }
+
+    match /messages/{messageId} {
+      allow create: if activeUser()
+        && request.resource.data.userId == request.auth.uid
+        && safeText(request.resource.data.name, 2, 120)
+        && safeText(request.resource.data.email, 5, 200)
+        && safeText(request.resource.data.message, 10, 5000)
+        && request.resource.data.type in ['general','service','complaint','report','achievement']
+        && request.resource.data.status == 'new';
+      allow read: if ownerOnly() || (signedIn() && resource.data.userId == request.auth.uid);
+      allow update: if ownerOnly();
+      allow delete: if false;
+    }
+
+    match /orders/{orderId} {
+      allow create: if activeUser()
+        && request.resource.data.userId == request.auth.uid
+        && safeText(request.resource.data.serviceTitle, 3, 200)
+        && request.resource.data.status == 'created';
+      allow read: if ownerOnly() || (signedIn() && resource.data.userId == request.auth.uid);
+      allow update: if ownerOnly();
+      allow delete: if false;
+    }
+
+    match /announcements/{announcementId} {
+      allow read: if resource.data.publishStatus == 'published' || ownerOnly();
+      allow create, update: if ownerOnly()
+        && safeText(request.resource.data.title, 3, 160)
+        && safeText(request.resource.data.body, 3, 2000)
+        && request.resource.data.publishStatus in ['draft','published','disabled','archived'];
+      allow delete: if ownerOnly();
     }
 
     match /missions/{missionId} {
